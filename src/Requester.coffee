@@ -1,0 +1,42 @@
+'use strict'
+HttpClient = require './HttpClient'
+error = require './error'
+BadResponseError = error.BadResponseError
+RequiredParameterMissingError = error.RequiredParameterMissingError
+
+module.exports = class Requester
+  constructor: (options) ->
+    @httpClient = new HttpClient options
+
+  request: (operation, params) ->
+    expectedCode = Object.keys(operation.responses)[0]
+    path = operation.path
+    body = {}
+    queryString = null
+
+    for paramDefinition in operation.parameters
+      paramName = paramDefinition.name
+      paramValue = params[paramName]
+
+      if paramDefinition.required and not paramDefinition.default? and not paramValue?
+        throw new RequiredParameterMissingError operation.operationId, paramDefinition.name
+
+      if paramValue?
+        switch paramDefinition.in
+          when 'body'
+            body = paramValue
+          when 'query'
+            if queryString then queryString += '&' else queryString = '?'
+            queryString += "#{paramName}=#{paramValue}"
+          when 'path'
+            # Replace all occurrences in the path
+            path = path.split("{#{paramName}}").join paramValue
+
+    if queryString then path += queryString
+
+    @httpClient[operation.method](path, body)
+    .then (response) ->
+      if response?.statusCode.toString() is expectedCode
+        response.body
+      else
+        throw new BadResponseError operation.operationId, response?.statusCode, response?.body

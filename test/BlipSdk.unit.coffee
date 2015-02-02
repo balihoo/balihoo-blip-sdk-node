@@ -10,7 +10,7 @@ describe 'BlipSdk unit tests', ->
         assert.fail 'Expected MissingCredentialsError'
       catch err
         assert err instanceof error.MissingCredentialsError
-        
+
       try
         new BlipSdk secretKey: 'blerp'
         assert.fail 'Expected MissingCredentialsError'
@@ -25,5 +25,5 @@ describe 'BlipSdk unit tests', ->
 
     it 'uses a default host and port', ->
       sdk = new BlipSdk apiKey: 'key', secretKey: 'shhhhh'
-      assert.ok sdk.httpClient.options.host
-      assert.ok sdk.httpClient.options.port
+      assert.ok sdk.requester.httpClient.options.host
+      assert.ok sdk.requester.httpClient.options.port
