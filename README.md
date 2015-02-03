@@ -83,7 +83,7 @@ Parameters:
 - brandKey (string):  The brand key (required)
 - locationKey (string):  The location key (required)
 - source (string):  The source of the location data (required)
-- document ():  location data (required)
+- document (object):  location data (required)
 
 ### getEvents()
 Returns a list of events
@@ -97,7 +97,9 @@ Parameters:
 Creates an API key for the specified brands
 
 Parameters:
-- body ():  brandKeys (required)
+- body (object)
+-- brandKeys (array|string): An array of brandKeys to which the key should have access or the string 'all' for all brands.
+-- notes (string): Additional notes about the intended use of the key.
 
 ### deleteApiKey()
 Revokes an API key
