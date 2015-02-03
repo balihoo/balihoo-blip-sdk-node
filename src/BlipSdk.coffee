@@ -5,6 +5,8 @@ error = require './error'
 Requester = require './Requester'
 MissingCredentialsError = error.MissingCredentialsError
 UnknownApiVersionError = error.UnknownApiVersionError
+MAX_CONCURRENCY = 20
+DEFAULT_CONCURRENCY = 10
 
 getOperationsForVersion = (version) ->
   fileName = "blip-#{version}.json"
@@ -24,7 +26,8 @@ module.exports =
       host = options.host or 'blip.balihoo-cloud.com'
       port = options.port or 443
       ssl = if options.ssl? then options.ssl else true
-      concurrency = options.concurrency or 10
+      concurrency = options.concurrency or DEFAULT_CONCURRENCY
+      if concurrency > MAX_CONCURRENCY then concurrency = MAX_CONCURRENCY
 
       requester = new Requester
         host: host
