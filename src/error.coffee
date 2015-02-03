@@ -9,3 +9,7 @@ exports.BadResponseError = class BadResponseError extends Error
 exports.RequiredParameterMissingError = class RequiredParameterMissingError extends Error
   constructor: (@operationId, @paramName) ->
     @message = "Operation #{@operationId} failed due to missing required parameter '#{@paramName}'."
+    
+exports.UnknownApiVersionError = class UnknownApiVersionError extends Error
+  constructor: (@version) ->
+    @message = "Unknown version number '#{@version}' specified."

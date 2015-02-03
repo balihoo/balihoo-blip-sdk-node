@@ -23,7 +23,12 @@ describe 'BlipSdk unit tests', ->
       catch err
         assert err instanceof error.MissingCredentialsError
 
-    it 'uses a default host and port', ->
-      sdk = new BlipSdk apiKey: 'key', secretKey: 'shhhhh'
-      assert.ok sdk.requester.httpClient.options.host
-      assert.ok sdk.requester.httpClient.options.port
+    context 'when the version number is specified and invalid', ->
+      it 'throws an UnknownApiVersionError', ->
+        try
+          version = 'ohno!'
+          sdk = new BlipSdk apiKey: 'key', secretKey: 'asdf', version: version
+          assert.fail 'Expected UnknownApiVersionError'
+        catch err
+          assert err instanceof error.UnknownApiVersionError
+          assert.strictEqual err.version, version
