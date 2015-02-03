@@ -6,7 +6,15 @@
 
 Parameters: {{^parameters}}none{{/parameters}}
 {{#parameters}}
+{{#hasProperties}}
+- {{{name}}} ({{{type}}})
+{{#propList}}
+-- {{{propertyName}}} ({{{type}}}): {{{description}}}
+{{/propList}}
+{{/hasProperties}}
+{{^hasProperties}}
 - {{{name}}} ({{{type}}}):  {{{description}}} {{#required}}(required){{/required}}
+{{/hasProperties}}
 {{/parameters}}
 
 {{/operations}}

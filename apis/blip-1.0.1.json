@@ -279,6 +279,10 @@
       "post": {
         "parameters": [
           {
+            "x-property-descriptions": {
+              "brandKeys": "An array of brandKeys to which the key should have access or the string 'all' for all brands.",
+              "notes": "Additional notes about the intended use of the key."
+            },
             "name": "body",
             "description": "brandKeys",
             "in": "body",
