@@ -1,3 +1,4 @@
+[![Build Status](https://travis-ci.org/balihoo/balihoo-node-blip-sdk.svg?branch=master)](https://travis-ci.org/balihoo/balihoo-node-blip-sdk)
 # Balihoo Node.JS BLIP SDK
 This package makes it easy to write software which interacts with the Balihoo Local Information Platform.
 
