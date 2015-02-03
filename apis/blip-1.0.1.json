@@ -79,6 +79,7 @@
       "parameters": [
         {
           "name": "brandKey",
+          "description": "The brand key",
           "type": "string",
           "in": "path",
           "required": true
@@ -112,6 +113,7 @@
       "parameters": [
         {
           "name": "brandKey",
+          "description": "The brand key",
           "type": "string",
           "in": "path",
           "required": true
@@ -121,9 +123,9 @@
         "parameters": [
           {
             "name": "projection",
+            "description": "Filter list to only locations that exist in this projection.  Default is universal.",
             "type": "string",
             "in": "query",
-            "required": true,
             "default": "universal"
           }
         ],
@@ -143,12 +145,14 @@
       "parameters": [
         {
           "name": "brandKey",
+          "description": "The brand key",
           "type": "string",
           "in": "path",
           "required": true
         },
         {
           "name": "locationKey",
+          "description": "The location key",
           "type": "string",
           "in": "path",
           "required": true
@@ -158,17 +162,17 @@
         "parameters": [
           {
             "name": "projection",
+            "description": "The data projection to return.  Default is universal.",
             "type": "string",
             "in": "query",
-            "required": true,
             "default": "universal"
           },
           {
             "name": "includeRefs",
+            "description": "Set to true to include referenced data.",
             "type": "string",
             "in": "query",
             "enum": ["true", "false"],
-            "required": true,
             "default": "false"
           }
         ],
@@ -188,18 +192,21 @@
       "parameters": [
         {
           "name": "brandKey",
+          "description": "The brand key",
           "type": "string",
           "in": "path",
           "required": true
         },
         {
           "name": "locationKey",
+          "description": "The location key",
           "type": "string",
           "in": "path",
           "required": true
         },
         {
           "name": "source",
+          "description": "The source of the location data",
           "type": "string",
           "in": "path",
           "required": true
@@ -233,18 +240,21 @@
         "parameters": [
           {
             "name": "brandKey",
+            "description": "The brand key",
             "type": "string",
             "in": "query",
             "required": true
           },
           {
             "name": "locationKey",
+            "description": "The location key",
             "type": "string",
             "in": "query",
             "required": true
           },
           {
             "name": "source",
+            "description": "Filter events to only those from this source",
             "type": "string",
             "in": "query"
           }

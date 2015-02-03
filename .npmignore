@@ -6,3 +6,4 @@ gulpfile.coffee
 coverage
 coffeelint.json
 node_modules
+tools
