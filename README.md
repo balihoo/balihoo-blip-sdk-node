@@ -34,14 +34,26 @@ The following parameters are optional and generally only useful for testing purp
 ## API
 
 ### getSources()
-Returns a list of configured sources
+Returns a list of sources
 
-Parameters: none
+Parameters:
+- brandKey (string):  The brand key (required)
+
+### createSource()
+Create a source
+
+Parameters:
+- brandKey (string):  The brand key (required)
+- body (object)
+-- source (string): Create a source
+-- type (string): Create a source
+-- description (string): Create a source
 
 ### getProjections()
-Returns a list of configured projections
+Returns a list of projections
 
-Parameters: none
+Parameters:
+- brandKey (string):  The brand key (required)
 
 ### getBrandKeys()
 Returns a list of brand keys to which the user has access
@@ -82,7 +94,7 @@ Creates or updates a location
 Parameters:
 - brandKey (string):  The brand key (required)
 - locationKey (string):  The location key (required)
-- source (string):  The source of the location data (required)
+- source (string):  The source of the location data
 - document (object):  location data (required)
 
 ### getEvents()
@@ -93,12 +105,13 @@ Parameters:
 - locationKey (string):  The location key (required)
 - source (string):  Filter events to only those from this source
 
-### postApiKey()
+### createApiKey()
 Creates an API key for the specified brands
 
 Parameters:
 - body (object)
--- brandKeys (array|string): An array of brandKeys to which the key should have access or the string 'all' for all brands.
+-- canManageBrands (boolean): Indicates whether the apiKey can create brands and sources
+-- brands (array): An array of objects of the following format: { "brandKey": "<brandKey>", "source": "<source>" }
 -- notes (string): Additional notes about the intended use of the key.
 
 ### deleteApiKey()

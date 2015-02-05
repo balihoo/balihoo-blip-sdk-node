@@ -26,10 +26,35 @@
       "basicAuth": []
     }
   ],
+  "parameters": {
+    "brandKeyPath": {
+      "name": "brandKey",
+      "description": "The brand key",
+      "type": "string",
+      "in": "path",
+      "required": true,
+      "minLength": 1,
+      "maxLength": 20
+    },
+    "locationKeyPath": {
+      "name": "locationKey",
+      "description": "The location key",
+      "type": "string",
+      "in": "path",
+      "required": true,
+      "minLength": 1,
+      "maxLength": 50
+    }
+  },
   "paths": {
-    "/source": {
+    "/brand/{brandKey}/source": {
+      "parameters": [
+        {
+          "$ref": "#/parameters/brandKeyPath"
+        }
+      ],
       "get": {
-        "description": "Returns a list of configured sources",
+        "description": "Returns a list of sources",
         "operationId": "getSources",
         "responses": {
           "200": {
@@ -42,11 +67,38 @@
             }
           }
         }
+      },
+      "post": {
+        "x-blip-brandManagerAuthorization": true,
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/source"
+            }
+          }
+        ],
+        "description": "Create a source",
+        "operationId": "createSource",
+        "responses": {
+          "204": {
+            "description": "no body",
+            "schema": {
+            }
+          }
+        }
       }
     },
-    "/projection": {
+    "/brand/{brandKey}/projection": {
+      "parameters": [
+        {
+          "$ref": "#/parameters/brandKeyPath"
+        }
+      ],
       "get": {
-        "description": "Returns a list of configured projections",
+        "description": "Returns a list of projections",
         "operationId": "getProjections",
         "responses": {
           "200": {
@@ -78,11 +130,7 @@
     "/brand/{brandKey}": {
       "parameters": [
         {
-          "name": "brandKey",
-          "description": "The brand key",
-          "type": "string",
-          "in": "path",
-          "required": true
+          "$ref": "#/parameters/brandKeyPath"
         }
       ],
       "get": {
@@ -98,6 +146,7 @@
         }
       },
       "put": {
+        "x-blip-brandManagerAuthorization": true,
         "description": "Create or update a brand",
         "operationId": "putBrand",
         "responses": {
@@ -112,11 +161,7 @@
     "/brand/{brandKey}/location": {
       "parameters": [
         {
-          "name": "brandKey",
-          "description": "The brand key",
-          "type": "string",
-          "in": "path",
-          "required": true
+          "$ref": "#/parameters/brandKeyPath"
         }
       ],
       "get": {
@@ -126,7 +171,9 @@
             "description": "Filter list to only locations that exist in this projection.  Default is universal.",
             "type": "string",
             "in": "query",
-            "default": "universal"
+            "default": "universal",
+            "minLength": 1,
+            "maxLength": 50
           }
         ],
         "description": "Returns a list of location keys",
@@ -144,18 +191,10 @@
     "/brand/{brandKey}/location/{locationKey}": {
       "parameters": [
         {
-          "name": "brandKey",
-          "description": "The brand key",
-          "type": "string",
-          "in": "path",
-          "required": true
+          "$ref": "#/parameters/brandKeyPath"
         },
         {
-          "name": "locationKey",
-          "description": "The location key",
-          "type": "string",
-          "in": "path",
-          "required": true
+          "$ref": "#/parameters/locationKeyPath"
         }
       ],
       "get": {
@@ -165,7 +204,9 @@
             "description": "The data projection to return.  Default is universal.",
             "type": "string",
             "in": "query",
-            "default": "universal"
+            "default": "universal",
+            "minLength": 1,
+            "maxLength": 50
           },
           {
             "name": "includeRefs",
@@ -186,34 +227,17 @@
             }
           }
         }
-      }
-    },
-    "/brand/{brandKey}/location/{locationKey}/{source}": {
-      "parameters": [
-        {
-          "name": "brandKey",
-          "description": "The brand key",
-          "type": "string",
-          "in": "path",
-          "required": true
-        },
-        {
-          "name": "locationKey",
-          "description": "The location key",
-          "type": "string",
-          "in": "path",
-          "required": true
-        },
-        {
-          "name": "source",
-          "description": "The source of the location data",
-          "type": "string",
-          "in": "path",
-          "required": true
-        }
-      ],
+      },
       "put": {
         "parameters": [
+          {
+            "name": "source",
+            "description": "The source of the location data",
+            "type": "string",
+            "in": "query",
+            "minLength": 1,
+            "maxLength": 50
+          },
           {
             "name": "document",
             "description": "location data",
@@ -243,20 +267,26 @@
             "description": "The brand key",
             "type": "string",
             "in": "query",
-            "required": true
+            "required": true,
+            "minLength": 1,
+            "maxLength": 20
           },
           {
             "name": "locationKey",
             "description": "The location key",
             "type": "string",
             "in": "query",
-            "required": true
+            "required": true,
+            "minLength": 1,
+            "maxLength": 50
           },
           {
             "name": "source",
             "description": "Filter events to only those from this source",
             "type": "string",
-            "in": "query"
+            "in": "query",
+            "minLength": 1,
+            "maxLength": 50
           }
         ],
         "description": "Returns a list of events",
@@ -280,20 +310,20 @@
         "parameters": [
           {
             "x-property-descriptions": {
-              "brandKeys": "An array of brandKeys to which the key should have access or the string 'all' for all brands.",
+              "canManageBrands": "Indicates whether the apiKey can create brands and sources",
+              "brands": "An array of objects of the following format: { \"brandKey\": \"<brandKey>\", \"source\": \"<source>\" }",
               "notes": "Additional notes about the intended use of the key."
             },
             "name": "body",
-            "description": "brandKeys",
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/postApiKeyBody"
+              "$ref": "#/definitions/createApiKeyBody"
             }
           }
         ],
         "description": "Creates an API key for the specified brands",
-        "operationId": "postApiKey",
+        "operationId": "createApiKey",
         "responses": {
           "200": {
             "description": "an API key",
@@ -346,20 +376,24 @@
       "type": "object",
       "properties": {
         "source": {
-          "type": "string"
-        },
-        "description": {
-          "type": "string"
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 50
         },
         "type": {
           "type": "string",
           "enum": [ "origin", "mutator" ]
+        },
+        "description": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200
         }
       },
       "required": [
         "source",
-        "description",
-        "type"
+        "type",
+        "description"
       ]
     },
     "projection": {
@@ -370,15 +404,11 @@
         },
         "description": {
           "type": "string"
-        },
-        "sources": {
-          "$ref": "#/definitions/arrayOfStrings"
         }
       },
       "required": [
         "projection",
-        "description",
-        "sources"
+        "description"
       ]
     },
     "brand": {
@@ -465,29 +495,42 @@
       },
       "required": ["apiKey", "secretKey"]
     },
-    "postApiKeyBody": {
+    "createApiKeyBody": {
       "type": "object",
       "properties": {
-        "brandKeys": {
-          "oneOf": [
-            {
-              "type": "array",
-              "minItems": 1,
-              "items": {
-                "type": "string"
+        "canManageBrands": {
+          "type": "boolean"
+        },
+        "brands": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "properties": {
+              "brandKey": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 20
+              },
+              "source": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 50
               }
             },
-            {
-              "type": "string",
-              "enum": ["all"]
-            }
-          ]
+            "required": [
+              "brandKey",
+              "source"
+            ]
+          }
         },
         "notes": {
           "type": "string"
         }
       },
-      "required": ["brandKeys"]
+      "required": [
+        "canManageBrands"
+      ]
     },
     "arrayOfStrings": {
       "type": "array",
