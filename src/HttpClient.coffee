@@ -31,7 +31,7 @@ class HttpClient
 
     if data
       data = JSON.stringify data
-      httpOptions.headers['Content-Length'] = data.length
+      httpOptions.headers['Content-Length'] = Buffer.byteLength data
 
     new Promise (resolve, reject) =>
       protocol = if @options.ssl then https else http
