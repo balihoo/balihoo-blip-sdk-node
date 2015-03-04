@@ -7,6 +7,7 @@ MissingCredentialsError = error.MissingCredentialsError
 UnknownApiVersionError = error.UnknownApiVersionError
 MAX_CONCURRENCY = 20
 DEFAULT_CONCURRENCY = 10
+LATEST_VERSION = "1.0.1"
 
 getOperationsForVersion = (version) ->
   fileName = "blip-#{version}.json"
@@ -22,7 +23,7 @@ module.exports =
       if not options?.apiKey? or not options?.secretKey?
         throw new error.MissingCredentialsError()
         
-      version = options?.version or pkg.version
+      version = options?.version or LATEST_VERSION
       host = options.host or 'blip.balihoo-cloud.com'
       port = options.port or 443
       ssl = if options.ssl? then options.ssl else true
@@ -39,5 +40,5 @@ module.exports =
         
       operations = getOperationsForVersion version
       operations.forEach (operation) =>
-        @[operation.operationId] = (params) =>
+        @[operation.operationId] = (params) ->
           requester.request operation, params
