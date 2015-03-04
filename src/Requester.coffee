@@ -29,6 +29,9 @@ module.exports = class Requester
             if queryString then queryString += '&' else queryString = '?'
             queryString += "#{paramName}=#{paramValue}"
           when 'path'
+            # Encode the parameter
+            paramValue = encodeURIComponent paramValue
+            
             # Replace all occurrences in the path
             path = path.split("{#{paramName}}").join paramValue
 
