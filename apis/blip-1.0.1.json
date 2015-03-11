@@ -44,9 +44,38 @@
       "required": true,
       "minLength": 1,
       "maxLength": 50
+    },
+    "sourceQueryString": {
+      "name": "source",
+      "description": "The source of the location data",
+      "type": "string",
+      "in": "query",
+      "minLength": 1,
+      "maxLength": 50
     }
   },
   "paths": {
+    "/ping": {
+      "get": {
+        "security": [],
+        "description": "Returns an indication of service availability",
+        "operationId": "ping",
+        "responses": {
+          "200": {
+            "description": "an indication of service availability",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "type": "string",
+                  "enum": [ "success" ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/brand/{brandKey}/source": {
       "parameters": [
         {
@@ -188,6 +217,45 @@
         }
       }
     },
+    "/brand/{brandKey}/locationList": {
+      "parameters": [
+        {
+          "$ref": "#/parameters/brandKeyPath"
+        }
+      ],
+      "post": {
+        "parameters": [
+          {
+            "name": "body",
+            "description": "location query",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "query": {
+                  "type": "object"
+                },
+                "view": {
+                  "enum": ["sitecenterlist"]
+                }
+              },
+              "required": ["query", "view"]
+            }
+          }
+        ],
+        "description": "Returns a list of locations",
+        "operationId": "getLocationList",
+        "responses": {
+          "200": {
+            "description": "a list of locations",
+            "schema": {
+              "$ref": "#/definitions/arrayOfObjects"
+            }
+          }
+        }
+      }
+    },
     "/brand/{brandKey}/location/{locationKey}": {
       "parameters": [
         {
@@ -231,12 +299,7 @@
       "put": {
         "parameters": [
           {
-            "name": "source",
-            "description": "The source of the location data",
-            "type": "string",
-            "in": "query",
-            "minLength": 1,
-            "maxLength": 50
+            "$ref": "#/parameters/sourceQueryString"
           },
           {
             "name": "document",
@@ -254,6 +317,106 @@
           "204": {
             "description": "no body",
             "schema": {
+            }
+          }
+        }
+      },
+      "delete": {
+        "parameters": [
+          {
+            "$ref": "#/parameters/sourceQueryString"
+          }
+        ],
+        "description": "Deletes a location",
+        "operationId": "deleteLocation",
+        "responses": {
+          "204": {
+            "description": "no body",
+            "schema": {
+            }
+          }
+        }
+      }
+    },
+    "/location/{locationId}": {
+      "parameters": [
+        {
+          "name": "locationId",
+          "description": "The location ID",
+          "type": "string",
+          "in": "path",
+          "required": true,
+          "minLength": 36,
+          "maxLength": 36
+        }
+      ],
+      "get": {
+        "x-blip-brandManagerAuthorization": true,
+        "parameters": [
+          {
+            "name": "projection",
+            "description": "The data projection to return.  Default is universal.",
+            "type": "string",
+            "in": "query",
+            "default": "universal",
+            "minLength": 1,
+            "maxLength": 50
+          },
+          {
+            "name": "includeRefs",
+            "description": "Set to true to include referenced data.",
+            "type": "string",
+            "in": "query",
+            "enum": [
+              "true",
+              "false"
+            ],
+            "default": "false"
+          }
+        ],
+        "description": "Returns a location",
+        "operationId": "getLocationById",
+        "responses": {
+          "200": {
+            "description": "a location",
+            "schema": {
+              "$ref": "#/definitions/location"
+            }
+          }
+        }
+      }
+    },
+    "/locationIntersect": {
+      "post": {
+        "x-blip-brandManagerAuthorization": true,
+        "parameters": [
+          {
+            "name": "body",
+            "description": "location IDs",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "locationIds": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "minItems": 1
+                }
+              },
+              "required": ["locationIds"]
+            }
+          }
+        ],
+        "description": "Returns the common data between all location projections",
+        "operationId": "getLocationIntersect",
+        "responses": {
+          "200": {
+            "description": "an object representing the common data between all location projections",
+            "schema": {
+              "type": "object"
             }
           }
         }
@@ -536,6 +699,12 @@
       "type": "array",
       "items": {
         "type": "string"
+      }
+    },
+    "arrayOfObjects": {
+      "type": "array",
+      "items": {
+        "type": "object"
       }
     }
   }

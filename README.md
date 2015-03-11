@@ -33,6 +33,11 @@ The following parameters are optional and generally only useful for testing purp
 
 ## API
 
+### ping()
+Returns an indication of service availability
+
+Parameters: none
+
 ### getSources()
 Returns a list of sources
 
@@ -79,6 +84,15 @@ Parameters:
 - brandKey (string):  The brand key (required)
 - projection (string):  Filter list to only locations that exist in this projection.  Default is universal.
 
+### getLocationList()
+Returns a list of locations
+
+Parameters:
+- brandKey (string):  The brand key (required)
+- body (object)
+-- query (object): location query
+-- view (object): location query
+
 ### getLocation()
 Returns a location
 
@@ -96,6 +110,29 @@ Parameters:
 - locationKey (string):  The location key (required)
 - source (string):  The source of the location data
 - document (object):  location data (required)
+
+### deleteLocation()
+Deletes a location
+
+Parameters:
+- brandKey (string):  The brand key (required)
+- locationKey (string):  The location key (required)
+- source (string):  The source of the location data
+
+### getLocationById()
+Returns a location
+
+Parameters:
+- locationId (string):  The location ID (required)
+- projection (string):  The data projection to return.  Default is universal.
+- includeRefs (string):  Set to true to include referenced data.
+
+### getLocationIntersect()
+Returns the common data between all location projections
+
+Parameters:
+- body (object)
+-- locationIds (array): location IDs
 
 ### getEvents()
 Returns a list of events
