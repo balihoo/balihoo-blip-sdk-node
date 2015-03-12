@@ -24,16 +24,12 @@ module.exports =
         throw new error.MissingCredentialsError()
         
       version = options?.version or LATEST_VERSION
-      host = options.host or 'blip.balihoo-cloud.com'
-      port = options.port or 443
-      ssl = if options.ssl? then options.ssl else true
+      endpoint = options.endpoint or 'https://blip.balihoo-cloud.com'
       concurrency = options.concurrency or DEFAULT_CONCURRENCY
       if concurrency > MAX_CONCURRENCY then concurrency = MAX_CONCURRENCY
 
       requester = new Requester
-        host: host
-        port: port
-        ssl: ssl
+        endpoint: endpoint
         concurrency: concurrency
         apiKey: options.apiKey
         secretKey: options.secretKey

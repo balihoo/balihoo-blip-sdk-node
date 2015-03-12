@@ -1,12 +1,21 @@
 'use strict'
-HttpClient = require './HttpClient'
+Promise = require 'bluebird'
+request = require 'request'
 error = require './error'
 BadResponseError = error.BadResponseError
 RequiredParameterMissingError = error.RequiredParameterMissingError
 
 module.exports = class Requester
   constructor: (options) ->
-    @httpClient = new HttpClient options
+    @endpoint = options.endpoint
+
+    request = request.defaults
+      jar: true
+      auth:
+        user: options.apiKey
+        pass: options.secretKey
+
+    Promise.promisifyAll request
 
   request: (operation, params) ->
     expectedCode = Object.keys(operation.responses)[0]
@@ -37,9 +46,9 @@ module.exports = class Requester
 
     if queryString then path += queryString
 
-    @httpClient[operation.method](path, body)
-    .then (response) ->
+    request[operation.method + 'Async'](@endpoint + path, json: body)
+    .spread (response, body) ->
       if response?.statusCode.toString() is expectedCode
-        response.body
+        body
       else
         throw new BadResponseError operation.operationId, response?.statusCode, response?.body

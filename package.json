@@ -1,6 +1,6 @@
 {
   "name": "balihoo-blip-sdk",
-  "version": "1.0.6",
+  "version": "1.0.7",
   "description": "Node.JS SDK for the Balihoo Local Information Platform",
   "main": "lib/BlipSdk.js",
   "repository": {
@@ -29,8 +29,9 @@
     "mustache": "^1.0.0"
   },
   "dependencies": {
-    "swagger2-utils": "^2.0.10",
+    "bluebird": "^2.9.4",
     "clone": "^0.2.0",
-    "bluebird": "^2.9.4"
+    "request": "^2.53.0",
+    "swagger2-utils": "^2.0.10"
   }
 }

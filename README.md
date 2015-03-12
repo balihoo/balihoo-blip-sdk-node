@@ -25,9 +25,7 @@ The following parameters are required:
 - secretKey:  The Balihoo-provided secret key
 
 The following parameters are optional and generally only useful for testing purposes:
-- host (string):  Change the hostname to which the SDK should connect.
-- port (number):  Change the port to which the SDK should connect.
-- ssl (boolean):  Disable SSL.
+- endpoint (string):  The fully qualified URL of BLIP (e.g. http[s]://somehost[:port]/some/path)
 - concurrency (number):  The number of concurrent connections to use.  Default is 10, max is 20.
 - version (string):  The API version to use.  Default value is the latest version.
 
