@@ -19,6 +19,8 @@ getOperationsForVersion = (version) ->
     
 module.exports =
   class BlipSdk
+    concurrency = undefined
+    
     constructor: (options) ->
       if not options?.apiKey? or not options?.secretKey?
         throw new error.MissingCredentialsError()
@@ -33,8 +35,11 @@ module.exports =
         concurrency: concurrency
         apiKey: options.apiKey
         secretKey: options.secretKey
-        
+      
       operations = getOperationsForVersion version
       operations.forEach (operation) =>
         @[operation.operationId] = (params) ->
           requester.request operation, params
+          
+    getConcurrency: ->
+      concurrency
