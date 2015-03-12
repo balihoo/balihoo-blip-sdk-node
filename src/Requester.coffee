@@ -11,6 +11,8 @@ module.exports = class Requester
 
     request = request.defaults
       jar: true
+      pool:
+        maxSockets: options.concurrency
       auth:
         user: options.apiKey
         pass: options.secretKey
