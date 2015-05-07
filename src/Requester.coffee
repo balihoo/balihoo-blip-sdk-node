@@ -10,6 +10,7 @@ module.exports = class Requester
     @endpoint = options.endpoint
 
     request = request.defaults
+      timeout: 20000
       jar: true
       pool:
         maxSockets: options.concurrency
