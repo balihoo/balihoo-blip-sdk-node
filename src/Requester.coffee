@@ -1,6 +1,7 @@
 'use strict'
 Promise = require 'bluebird'
 request = require 'request'
+http = require 'http'
 error = require './error'
 BadResponseError = error.BadResponseError
 RequiredParameterMissingError = error.RequiredParameterMissingError
@@ -9,11 +10,13 @@ module.exports = class Requester
   constructor: (options) ->
     @endpoint = options.endpoint
 
+    @agent = new http.Agent
+      maxSockets: options.concurrency
+
     request = request.defaults
       timeout: 20000
+      pool: false
       jar: true
-      pool:
-        maxSockets: options.concurrency
       auth:
         user: options.apiKey
         pass: options.secretKey
@@ -49,7 +52,11 @@ module.exports = class Requester
 
     if queryString then path += queryString
 
-    request[operation.method + 'Async'](@endpoint + path, json: body)
+    request[operation.method + 'Async'](
+      @endpoint + path,
+      json: body
+      agent: @agent
+    )
     .spread (response, body) ->
       if response?.statusCode.toString() is expectedCode
         body
