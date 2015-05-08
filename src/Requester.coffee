@@ -71,7 +71,6 @@ module.exports = class Requester
         if err.code in ['ESOCKETTIMEDOUT', 'ETIMEDOUT', 'ECONNRESET', 'ECONNREFUSED'] and retries < MAX_RETRIES
           # Try again
           retries++
-          console.log "Retrying due to #{err.code}.  Try ##{retries}"
           setTimeout runRequest, retries * RETRY_BACKOFF_MULTIPLIER
         else
           # Not a socket error or retries are exhausted
