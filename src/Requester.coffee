@@ -6,6 +6,9 @@ error = require './error'
 BadResponseError = error.BadResponseError
 RequiredParameterMissingError = error.RequiredParameterMissingError
 
+MAX_RETRIES = 10
+RETRY_BACKOFF_MULTIPLIER=10
+
 module.exports = class Requester
   constructor: (options) ->
     @endpoint = options.endpoint
@@ -24,6 +27,7 @@ module.exports = class Requester
     Promise.promisifyAll request
 
   request: (operation, params) ->
+    retries = 0
     expectedCode = Object.keys(operation.responses)[0]
     path = operation.path
     body = {}
@@ -52,13 +56,25 @@ module.exports = class Requester
 
     if queryString then path += queryString
 
-    request[operation.method + 'Async'](
-      @endpoint + path,
-      json: body
-      agent: @agent
-    )
-    .spread (response, body) ->
-      if response?.statusCode.toString() is expectedCode
-        body
-      else
-        throw new BadResponseError operation.operationId, response?.statusCode, response?.body
+    runRequest = =>
+      request[operation.method + 'Async'](
+        @endpoint + path,
+        json: body
+        agent: @agent
+      )
+      .spread (response, body) ->
+        if response?.statusCode.toString() is expectedCode
+          body
+        else
+          throw new BadResponseError operation.operationId, response?.statusCode, response?.body
+      .catch (err) ->
+        if err.code in ['ESOCKETTIMEDOUT', 'ETIMEDOUT', 'ECONNRESET', 'ECONNREFUSED'] and retries < MAX_RETRIES
+          # Try again
+          retries++
+          console.log "Retrying due to #{err.code}.  Try ##{retries}"
+          setTimeout runRequest, retries * RETRY_BACKOFF_MULTIPLIER
+        else
+          # Not a socket error or retries are exhausted
+          throw err
+      
+    runRequest()
