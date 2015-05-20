@@ -10,12 +10,12 @@ npm install balihoo-blip-sdk
 ## Usage
 ```javascript
   var BlipSdk = require('balihoo-blip-sdk');
-  
+
   var parameters = {
     apiKey: '...',
     secretKey: '...'
   };
-  
+
   var blipSdk = new BlipSdk(parameters);
 ```
 
@@ -80,7 +80,7 @@ Returns a list of location keys
 
 Parameters:
 - brandKey (string):  The brand key (required)
-- projection (string):  Filter list to only locations that exist in this projection.  Default is universal.
+- projection (string):  Filter list to only locations that exist in this projection.  Default is universal. 
 
 ### getLocationList()
 Returns a list of locations
@@ -97,8 +97,8 @@ Returns a location
 Parameters:
 - brandKey (string):  The brand key (required)
 - locationKey (string):  The location key (required)
-- projection (string):  The data projection to return.  Default is universal.
-- includeRefs (string):  Set to true to include referenced data.
+- projection (string):  The data projection to return.  Default is universal. 
+- includeRefs (string):  Set to true to include referenced data. 
 
 ### putLocation()
 Creates or updates a location
@@ -106,7 +106,7 @@ Creates or updates a location
 Parameters:
 - brandKey (string):  The brand key (required)
 - locationKey (string):  The location key (required)
-- source (string):  The source of the location data
+- source (string):  The source of the location data 
 - document (object):  location data (required)
 
 ### deleteLocation()
@@ -115,15 +115,25 @@ Deletes a location
 Parameters:
 - brandKey (string):  The brand key (required)
 - locationKey (string):  The location key (required)
-- source (string):  The source of the location data
+- source (string):  The source of the location data 
+
+### patchLocation()
+Creates or updates a location
+
+Parameters:
+- brandKey (string):  The brand key (required)
+- locationKey (string):  The location key (required)
+- eventId (string):  The event ID to be used as the basis for patch calculation (required)
+- source (string):  The source of the location data 
+- document (object):  location data (required)
 
 ### getLocationById()
 Returns a location
 
 Parameters:
 - locationId (string):  The location ID (required)
-- projection (string):  The data projection to return.  Default is universal.
-- includeRefs (string):  Set to true to include referenced data.
+- projection (string):  The data projection to return.  Default is universal. 
+- includeRefs (string):  Set to true to include referenced data. 
 
 ### getLocationIntersect()
 Returns the common data between all location projections
@@ -131,6 +141,7 @@ Returns the common data between all location projections
 Parameters:
 - body (object)
 -- locationIds (array): location IDs
+-- defaultValue (string): location IDs
 
 ### getEvents()
 Returns a list of events
@@ -138,7 +149,7 @@ Returns a list of events
 Parameters:
 - brandKey (string):  The brand key (required)
 - locationKey (string):  The location key (required)
-- source (string):  Filter events to only those from this source
+- source (string):  Filter events to only those from this source 
 
 ### createApiKey()
 Creates an API key for the specified brands
@@ -159,3 +170,5 @@ Parameters:
 Returns the API documentation
 
 Parameters: none
+
+
