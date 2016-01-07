@@ -48,9 +48,9 @@ Create a source
 Parameters:
 - brandKey (string):  The brand key (required)
 - body (object)
--- source (string): Create a source
--- type (string): Create a source
--- description (string): Create a source
+ - source (string): Create a source
+ - type (string): Create a source
+ - description (string): Create a source
 
 ### getProjections()
 Returns a list of projections
@@ -88,8 +88,8 @@ Returns a list of locations
 Parameters:
 - brandKey (string):  The brand key (required)
 - body (object)
--- query (object): location query
--- view (object): location query
+ - query (object): location query
+ - view (object): location query
 
 ### getLocation()
 Returns a location
@@ -140,8 +140,8 @@ Returns the common data between all location projections
 
 Parameters:
 - body (object)
--- locationIds (array): location IDs
--- defaultValue (string): location IDs
+ - locationIds (array): location IDs
+ - defaultValue (string): location IDs
 
 ### getEvents()
 Returns a list of events
@@ -156,9 +156,9 @@ Creates an API key for the specified brands
 
 Parameters:
 - body (object)
--- canManageBrands (boolean): Indicates whether the apiKey can create brands and sources
--- brands (array): An array of objects of the following format: { "brandKey": "<brandKey>", "source": "<source>" }
--- notes (string): Additional notes about the intended use of the key.
+ - canManageBrands (boolean): Indicates whether the apiKey can create brands and sources
+ - brands (array): An array of objects of the following format: { "brandKey": "<brandKey>", "source": "<source>" }
+ - notes (string): Additional notes about the intended use of the key.
 
 ### deleteApiKey()
 Revokes an API key
