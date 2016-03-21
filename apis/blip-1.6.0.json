@@ -303,10 +303,11 @@
                   ]
                 },
                 "pageSize": {
-                  "type": "integer",
+                  "type": "integer"
                 },
                 "pageNumber": {
-                  "type": "integer",
+                  "type": "integer"
+                }
               },
               "required": ["query", "view"]
             }

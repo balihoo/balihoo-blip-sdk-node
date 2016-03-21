@@ -100,6 +100,8 @@ Parameters:
 - body (object)
  - query (object): location query
  - view (object): location query
+ - pageSize (integer): location query
+ - pageNumber (integer): location query
 
 ### getLocationCount()
 Returns a count of locations
