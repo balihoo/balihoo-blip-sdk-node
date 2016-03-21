@@ -301,7 +301,12 @@
                     "brands_datawarehouse",
                     "locations_datawarehouse"
                   ]
-                }
+                },
+                "pageSize": {
+                  "type": "integer",
+                },
+                "pageNumber": {
+                  "type": "integer",
               },
               "required": ["query", "view"]
             }
