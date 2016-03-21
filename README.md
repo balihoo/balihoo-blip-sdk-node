@@ -82,6 +82,16 @@ Parameters:
 - brandKey (string):  The brand key (required)
 - projection (string):  Filter list to only locations that exist in this projection.  Default is universal. 
 
+### patchLocations()
+Applies the provided patch to each location in the list
+
+Parameters:
+- brandKey (string):  The brand key (required)
+- source (string):  The source of the location data 
+- body (object)
+ - patch (array): request body
+ - locationKeys (array): request body
+
 ### getLocationList()
 Returns a list of locations
 
@@ -90,6 +100,14 @@ Parameters:
 - body (object)
  - query (object): location query
  - view (object): location query
+
+### getLocationCount()
+Returns a count of locations
+
+Parameters:
+- brandKey (string):  The brand key (required)
+- body (object)
+ - query (object): location query
 
 ### getLocation()
 Returns a location
@@ -118,7 +136,7 @@ Parameters:
 - source (string):  The source of the location data 
 
 ### patchLocation()
-Creates or updates a location
+Updates a location at the specified event level
 
 Parameters:
 - brandKey (string):  The brand key (required)
@@ -134,6 +152,16 @@ Parameters:
 - locationId (string):  The location ID (required)
 - projection (string):  The data projection to return.  Default is universal. 
 - includeRefs (string):  Set to true to include referenced data. 
+
+### patchLocationSigned()
+Applies the provided patch to the prescribed location
+
+Parameters:
+- locationId (string):  The location ID (required)
+- patch (string):  The JIFF patch to be applied (required)
+- source (string):  The source of the location data 
+- redirect (string):  The URL to which the user should be redirected on success 
+- sig (string):  The URL signature (required)
 
 ### getLocationIntersect()
 Returns the common data between all location projections
@@ -165,6 +193,27 @@ Revokes an API key
 
 Parameters:
 - apiKey (string):  Revokes an API key (required)
+
+### authorizeUpload()
+Returns a signed upload request
+
+Parameters:
+- brandKey (string):  The brand key (required)
+- fileMD5 (string):  The MD5 hex hash of the file to upload (required)
+
+### bulkLoad()
+Bulk load locations from a file
+
+Parameters:
+- brandKey (string):  The brand key (required)
+- source (string):  The source of the location data 
+- s3Path (string):  The full S3 URL for the gzipped JSON file (required)
+- implicitDelete (boolean):  Whether locations missing from the file should be deleted (required)
+- expectedRecordCount (integer):  The number of location records in the file. (required)
+- successEmail (string):  The email address to email upon success. Can be a comma-delimited list. 
+- failEmail (string):  The email address to email upon failure. Can be a comma-delimited list. 
+- successCallback (string):  The URL to be requested upon success. 
+- failCallback (string):  The URL to be requested upon failure. 
 
 ### getDocs()
 Returns the API documentation
