@@ -102,6 +102,8 @@ Parameters:
  - view (object): location query
  - pageSize (integer): location query
  - pageNumber (integer): location query
+ - sortColumn (object): location query
+ - sortDirection (object): location query
 
 ### getLocationCount()
 Returns a count of locations
@@ -137,6 +139,15 @@ Parameters:
 - locationKey (string):  The location key (required)
 - source (string):  The source of the location data 
 
+### getEvent()
+Returns a specific event object
+
+Parameters:
+- brandKey (string):  The brand key (required)
+- locationKey (string):  The location key (required)
+- eventId (string):  The event ID to be used as the basis for patch calculation (required)
+- source (string):  The source of the location data 
+
 ### patchLocation()
 Updates a location at the specified event level
 
@@ -146,6 +157,15 @@ Parameters:
 - eventId (string):  The event ID to be used as the basis for patch calculation (required)
 - source (string):  The source of the location data 
 - document (object):  location data (required)
+
+### deleteEvent()
+Attempts to delete an event from a location's projection
+
+Parameters:
+- brandKey (string):  The brand key (required)
+- locationKey (string):  The location key (required)
+- eventId (string):  The event ID to be used as the basis for patch calculation (required)
+- source (string):  The source of the location data 
 
 ### getLocationById()
 Returns a location
@@ -171,7 +191,6 @@ Returns the common data between all location projections
 Parameters:
 - body (object)
  - locationIds (array): location IDs
- - defaultValue (string): location IDs
 
 ### getEvents()
 Returns a list of events
@@ -180,21 +199,6 @@ Parameters:
 - brandKey (string):  The brand key (required)
 - locationKey (string):  The location key (required)
 - source (string):  Filter events to only those from this source 
-
-### createApiKey()
-Creates an API key for the specified brands
-
-Parameters:
-- body (object)
- - canManageBrands (boolean): Indicates whether the apiKey can create brands and sources
- - brands (array): An array of objects of the following format: { "brandKey": "<brandKey>", "source": "<source>" }
- - notes (string): Additional notes about the intended use of the key.
-
-### deleteApiKey()
-Revokes an API key
-
-Parameters:
-- apiKey (string):  Revokes an API key (required)
 
 ### authorizeUpload()
 Returns a signed upload request
@@ -221,5 +225,3 @@ Parameters:
 Returns the API documentation
 
 Parameters: none
-
-
