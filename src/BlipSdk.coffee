@@ -7,7 +7,7 @@ MissingCredentialsError = error.MissingCredentialsError
 UnknownApiVersionError = error.UnknownApiVersionError
 MAX_CONCURRENCY = 20
 DEFAULT_CONCURRENCY = 10
-LATEST_VERSION = "1.6.0"
+LATEST_VERSION = "1.11.0"
 
 getOperationsForVersion = (version) ->
   fileName = "blip-#{version}.json"
