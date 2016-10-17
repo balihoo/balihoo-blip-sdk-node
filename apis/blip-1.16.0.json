@@ -1,0 +1,1182 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "version": "1.16.0",
+    "title": "BLIP API",
+    "description": "Balihoo Local Information Platform API"
+  },
+  "host": "blip.dev.balihoo-cloud.com",
+  "schemes": [
+    "https"
+  ],
+  "securityDefinitions": {
+    "basicAuth": {
+      "type": "basic",
+      "description": "HTTP Basic Authentication."
+    }
+  },
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "security": [
+    {
+      "basicAuth": []
+    }
+  ],
+  "parameters": {
+    "brandKeyPath": {
+      "name": "brandKey",
+      "description": "The brand key",
+      "type": "string",
+      "in": "path",
+      "required": true,
+      "minLength": 1,
+      "maxLength": 20
+    },
+    "locationKeyPath": {
+      "name": "locationKey",
+      "description": "The location key.",
+      "type": "string",
+      "in": "path",
+      "required": true,
+      "minLength": 1,
+      "maxLength": 50
+    },
+    "locationIdPath": {
+      "name": "locationId",
+      "description": "The location identifier.",
+      "type": "string",
+      "in": "path",
+      "required": true,
+      "minLength": 36,
+      "maxLength": 36
+    },
+    "sourceQueryString": {
+      "name": "source",
+      "description": "The source of the location data.",
+      "type": "string",
+      "in": "query",
+      "minLength": 1,
+      "maxLength": 50
+    },
+    "eventIdPath": {
+      "name": "eventId",
+      "description": "The event identifier.",
+      "type": "string",
+      "in": "path",
+      "required": true
+    },
+    "jwtResponse": {
+      "name": "jwtResponse",
+      "description": "The JWT-encoded result of the login.",
+      "type": "string",
+      "in": "query",
+      "required": true
+    }
+  },
+  "paths": {
+    "/ping": {
+      "get": {
+        "security": [],
+        "x-stormpathAuth": [],
+        "description": "Returns an indication of service availability",
+        "operationId": "ping",
+        "responses": {
+          "200": {
+            "description": "an indication of service availability",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "type": "string",
+                  "enum": [
+                    "success"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/brand/{brandKey}/source": {
+      "parameters": [
+        {
+          "$ref": "#/parameters/brandKeyPath"
+        }
+      ],
+      "get": {
+        "description": "Returns a list of sources",
+        "operationId": "getSources",
+        "responses": {
+          "200": {
+            "description": "a list of sources",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/source"
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "x-stormpathAuth": [
+          "app.blip.canManageBrands"
+        ],
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/source"
+            }
+          }
+        ],
+        "description": "Create a source",
+        "operationId": "createSource",
+        "responses": {
+          "204": {
+            "description": "no body",
+            "schema": {}
+          }
+        }
+      }
+    },
+    "/brand/{brandKey}/projection": {
+      "parameters": [
+        {
+          "$ref": "#/parameters/brandKeyPath"
+        }
+      ],
+      "get": {
+        "description": "Returns a list of projections",
+        "operationId": "getProjections",
+        "responses": {
+          "200": {
+            "description": "a list of projections",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/projection"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/brand": {
+      "get": {
+        "description": "Returns a list of brand keys to which the user has access",
+        "operationId": "getBrandKeys",
+        "responses": {
+          "200": {
+            "description": "a list of brand keys",
+            "schema": {
+              "$ref": "#/definitions/arrayOfStrings"
+            }
+          }
+        }
+      }
+    },
+    "/brand/{brandKey}": {
+      "parameters": [
+        {
+          "$ref": "#/parameters/brandKeyPath"
+        }
+      ],
+      "get": {
+        "description": "Returns the requested brand details",
+        "operationId": "getBrand",
+        "responses": {
+          "200": {
+            "description": "brand details",
+            "schema": {
+              "$ref": "#/definitions/brand"
+            }
+          }
+        }
+      },
+      "put": {
+        "x-stormpathAuth": [
+          "app.blip.canManageBrands"
+        ],
+        "description": "Create or update a brand",
+        "operationId": "putBrand",
+        "responses": {
+          "204": {
+            "description": "no body",
+            "schema": {}
+          }
+        }
+      }
+    },
+    "/brand/{brandKey}/location": {
+      "parameters": [
+        {
+          "$ref": "#/parameters/brandKeyPath"
+        }
+      ],
+      "get": {
+        "parameters": [
+          {
+            "name": "projection",
+            "description": "Filter list to only locations that exist in this projection.  Default is universal.",
+            "type": "string",
+            "in": "query",
+            "default": "universal",
+            "minLength": 1,
+            "maxLength": 50
+          }
+        ],
+        "description": "Returns a list of location keys",
+        "operationId": "getLocationKeys",
+        "responses": {
+          "200": {
+            "description": "a list of location keys",
+            "schema": {
+              "$ref": "#/definitions/arrayOfStrings"
+            }
+          }
+        }
+      },
+      "patch": {
+        "parameters": [
+          {
+            "$ref": "#/parameters/sourceQueryString"
+          },
+          {
+            "name": "body",
+            "description": "request body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "patch": {
+                  "type": "array",
+                  "description": "The patch to apply.",
+                  "minItems": 1
+                },
+                "locationKeys": {
+                  "description": "The list of locations to which the patch should be applied",
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "minItems": 1
+                }
+              },
+              "required": [
+                "patch",
+                "locationKeys"
+              ]
+            }
+          }
+        ],
+        "description": "Applies the provided patch to each location in the list",
+        "operationId": "patchLocations",
+        "responses": {
+          "204": {
+            "description": "no body",
+            "schema": {}
+          }
+        }
+      }
+    },
+    "/brand/{brandKey}/locationList": {
+      "parameters": [
+        {
+          "$ref": "#/parameters/brandKeyPath"
+        }
+      ],
+      "post": {
+        "parameters": [
+          {
+            "name": "body",
+            "description": "location query",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "query": {
+                  "type": "object",
+                  "description": "The query to execute."
+                },
+                "view": {
+                  "enum": [
+                    "locationqueryworker",
+                    "sitecenterlist",
+                    "full",
+                    "emailtarget",
+                    "brands_datawarehouse",
+                    "locations_datawarehouse",
+                    "budgets_datawarehouse",
+                    "fb_budgets_datawarehouse",
+                    "custom"
+                  ],
+                  "description": "The view name."
+                },
+                "paths": {
+                  "type": "array",
+                  "description": "A list of paths.",
+                  "items": {
+                    "type": "string",
+                    "description": "A JSON path using dot-notation."
+                  }
+                },
+                "pageSize": {
+                  "type": "integer",
+                  "description": "The number of results to return per page."
+                },
+                "pageNumber": {
+                  "type": "integer",
+                  "description": "The page index to return."
+                },
+                "sortColumn": {
+                  "enum": [
+                    "locationKey",
+                    "name"
+                  ],
+                  "description": "The column on which to sort results."
+                },
+                "sortDirection": {
+                  "enum": [
+                    "asc",
+                    "desc"
+                  ],
+                  "description": "The sort direction."
+                }
+              },
+              "required": [
+                "query",
+                "view"
+              ]
+            }
+          }
+        ],
+        "description": "Returns a list of locations",
+        "operationId": "getLocationList",
+        "responses": {
+          "200": {
+            "description": "a list of locations",
+            "schema": {
+              "$ref": "#/definitions/arrayOfObjects"
+            }
+          }
+        }
+      }
+    },
+    "/brand/{brandKey}/locationCount": {
+      "parameters": [
+        {
+          "$ref": "#/parameters/brandKeyPath"
+        }
+      ],
+      "post": {
+        "parameters": [
+          {
+            "name": "body",
+            "description": "location query",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "query": {
+                  "type": "object",
+                  "description": "The query to execute."
+                }
+              },
+              "required": [
+                "query"
+              ]
+            }
+          }
+        ],
+        "description": "Returns a count of locations",
+        "operationId": "getLocationCount",
+        "responses": {
+          "200": {
+            "description": "a count of locations",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "count": {
+                  "type": "number"
+                }
+              },
+              "required": [
+                "count"
+              ]
+            }
+          }
+        }
+      }
+    },
+    "/brand/{brandKey}/location/{locationKey}": {
+      "parameters": [
+        {
+          "$ref": "#/parameters/brandKeyPath"
+        },
+        {
+          "$ref": "#/parameters/locationKeyPath"
+        }
+      ],
+      "get": {
+        "parameters": [
+          {
+            "name": "projection",
+            "description": "The data projection to return.  Default is universal.",
+            "type": "string",
+            "in": "query",
+            "default": "universal",
+            "minLength": 1,
+            "maxLength": 50
+          },
+          {
+            "name": "includeRefs",
+            "description": "Set to true to include referenced data.",
+            "type": "string",
+            "in": "query",
+            "enum": [
+              "true",
+              "false"
+            ],
+            "default": "false"
+          }
+        ],
+        "description": "Returns a location",
+        "operationId": "getLocation",
+        "responses": {
+          "200": {
+            "description": "a location",
+            "schema": {
+              "$ref": "#/definitions/location"
+            }
+          }
+        }
+      },
+      "put": {
+        "parameters": [
+          {
+            "$ref": "#/parameters/sourceQueryString"
+          },
+          {
+            "name": "document",
+            "description": "location data",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object"
+            }
+          }
+        ],
+        "description": "Creates or updates a location",
+        "operationId": "putLocation",
+        "responses": {
+          "204": {
+            "description": "no body",
+            "schema": {}
+          }
+        }
+      },
+      "delete": {
+        "parameters": [
+          {
+            "$ref": "#/parameters/sourceQueryString"
+          }
+        ],
+        "description": "Deletes a location",
+        "operationId": "deleteLocation",
+        "responses": {
+          "204": {
+            "description": "no body",
+            "schema": {}
+          }
+        }
+      }
+    },
+    "/brand/{brandKey}/location/{locationKey}/event/{eventId}": {
+      "parameters": [
+        {
+          "$ref": "#/parameters/brandKeyPath"
+        },
+        {
+          "$ref": "#/parameters/locationKeyPath"
+        },
+        {
+          "$ref": "#/parameters/eventIdPath"
+        },
+        {
+          "$ref": "#/parameters/sourceQueryString"
+        }
+      ],
+      "get": {
+        "description": "Returns a specific event object",
+        "operationId": "getEvent",
+        "responses": {
+          "200": {
+            "description": "an event",
+            "schema": {
+              "$ref": "#/definitions/event"
+            }
+          }
+        }
+      },
+      "patch": {
+        "parameters": [
+          {
+            "name": "document",
+            "description": "location data",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object"
+            }
+          }
+        ],
+        "description": "Updates a location at the specified event level",
+        "operationId": "patchLocation",
+        "responses": {
+          "204": {
+            "description": "no body",
+            "schema": {}
+          }
+        }
+      },
+      "delete": {
+        "description": "Attempts to delete an event from a location's projection",
+        "operationId": "deleteEvent",
+        "responses": {
+          "204": {
+            "description": "no body",
+            "schema": {}
+          }
+        }
+      }
+    },
+    "/location/{locationId}": {
+      "parameters": [
+        {
+          "$ref": "#/parameters/locationIdPath"
+        }
+      ],
+      "get": {
+        "x-stormpathAuth": [
+          "app.blip.canManageBrands"
+        ],
+        "parameters": [
+          {
+            "name": "projection",
+            "description": "The data projection to return.  Default is universal.",
+            "type": "string",
+            "in": "query",
+            "default": "universal",
+            "minLength": 1,
+            "maxLength": 50
+          },
+          {
+            "name": "includeRefs",
+            "description": "Set to true to include referenced data.",
+            "type": "string",
+            "in": "query",
+            "enum": [
+              "true",
+              "false"
+            ],
+            "default": "false"
+          }
+        ],
+        "description": "Returns a location",
+        "operationId": "getLocationById",
+        "responses": {
+          "200": {
+            "description": "a location",
+            "schema": {
+              "$ref": "#/definitions/location"
+            }
+          }
+        }
+      }
+    },
+    "/location/{locationId}/patchsigned": {
+      "parameters": [
+        {
+          "$ref": "#/parameters/locationIdPath"
+        },
+        {
+          "name": "patch",
+          "required": true,
+          "description": "The patch to be applied",
+          "in": "query",
+          "type": "string",
+          "minLength": 1
+        },
+        {
+          "$ref": "#/parameters/sourceQueryString"
+        },
+        {
+          "name": "redirect",
+          "description": "The URL to which the user should be redirected on success",
+          "in": "query",
+          "type": "string",
+          "minLength": 1
+        },
+        {
+          "name": "sig",
+          "required": true,
+          "description": "The URL signature",
+          "in": "query",
+          "type": "string",
+          "minLength": 1
+        }
+      ],
+      "get": {
+        "security": [],
+        "x-stormpathAuth": [],
+        "description": "Applies the provided patch to the prescribed location",
+        "operationId": "patchLocationSigned",
+        "responses": {
+          "204": {
+            "description": "no body",
+            "schema": {}
+          },
+          "302": {
+            "description": "redirect",
+            "schema": {}
+          }
+        }
+      }
+    },
+    "/locationIntersect": {
+      "post": {
+        "x-stormpathAuth": [
+          "app.blip.canManageBrands"
+        ],
+        "parameters": [
+          {
+            "name": "body",
+            "description": "location IDs",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "locationIds": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "minItems": 1
+                }
+              },
+              "required": [
+                "locationIds"
+              ]
+            }
+          }
+        ],
+        "description": "Returns the common data between all location projections",
+        "operationId": "getLocationIntersect",
+        "responses": {
+          "200": {
+            "description": "an object representing the common data between all location projections",
+            "schema": {
+              "type": "object"
+            }
+          }
+        }
+      }
+    },
+    "/event": {
+      "get": {
+        "parameters": [
+          {
+            "name": "brandKey",
+            "description": "The brand key",
+            "type": "string",
+            "in": "query",
+            "required": true,
+            "minLength": 1,
+            "maxLength": 20
+          },
+          {
+            "name": "locationKey",
+            "description": "The location key",
+            "type": "string",
+            "in": "query",
+            "required": true,
+            "minLength": 1,
+            "maxLength": 50
+          },
+          {
+            "name": "source",
+            "description": "Filter events to only those from this source",
+            "type": "string",
+            "in": "query",
+            "minLength": 1,
+            "maxLength": 50
+          }
+        ],
+        "description": "Returns a list of events",
+        "operationId": "getEvents",
+        "responses": {
+          "200": {
+            "description": "a list of events",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/event"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/brand/{brandKey}/authorizeUpload": {
+      "parameters": [
+        {
+          "$ref": "#/parameters/brandKeyPath"
+        }
+      ],
+      "get": {
+        "parameters": [
+          {
+            "name": "fileMD5",
+            "description": "The MD5 hex hash of the file to upload",
+            "type": "string",
+            "in": "query",
+            "required": true,
+            "minLength": 32,
+            "maxLength": 32
+          }
+        ],
+        "description": "Returns a signed upload request",
+        "operationId": "authorizeUpload",
+        "responses": {
+          "200": {
+            "description": "no body",
+            "schema": {}
+          }
+        }
+      }
+    },
+    "/brand/{brandKey}/bulkLoad": {
+      "parameters": [
+        {
+          "$ref": "#/parameters/brandKeyPath"
+        },
+        {
+          "$ref": "#/parameters/sourceQueryString"
+        }
+      ],
+      "get": {
+        "parameters": [
+          {
+            "name": "s3Path",
+            "description": "The full S3 URL for the gzipped JSON file",
+            "type": "string",
+            "in": "query",
+            "required": true
+          },
+          {
+            "name": "implicitDelete",
+            "description": "Whether locations missing from the file should be deleted",
+            "type": "boolean",
+            "in": "query",
+            "required": true
+          },
+          {
+            "name": "expectedRecordCount",
+            "description": "The number of location records in the file.",
+            "type": "integer",
+            "in": "query",
+            "required": true,
+            "minLength": 1,
+            "maxLength": 10
+          },
+          {
+            "name": "successEmail",
+            "description": "The email address to email upon success. Can be a comma-delimited list.",
+            "type": "string",
+            "in": "query",
+            "required": false,
+            "minLength": 3,
+            "maxLength": 254
+          },
+          {
+            "name": "failEmail",
+            "description": "The email address to email upon failure. Can be a comma-delimited list.",
+            "type": "string",
+            "in": "query",
+            "required": false,
+            "minLength": 3,
+            "maxLength": 254
+          },
+          {
+            "name": "successCallback",
+            "description": "The URL to be requested upon success.",
+            "type": "string",
+            "in": "query",
+            "required": false,
+            "minLength": 1,
+            "maxLength": 2000
+          },
+          {
+            "name": "failCallback",
+            "description": "The URL to be requested upon failure.",
+            "type": "string",
+            "in": "query",
+            "required": false,
+            "minLength": 1,
+            "maxLength": 2000
+          }
+        ],
+        "description": "Bulk load locations from a file",
+        "operationId": "bulkLoad",
+        "responses": {
+          "204": {
+            "description": "no body",
+            "schema": {}
+          }
+        }
+      }
+    },
+    "/brand/{brandKey}/schema": {
+      "parameters": [
+        {
+          "$ref": "#/parameters/brandKeyPath"
+        }
+      ],
+      "get": {
+        "description": "Returns the validation schema for the brand",
+        "operationId": "getSchema",
+        "responses": {
+          "200": {
+            "description": "schema document",
+            "schema": {
+              "type": "object"
+            }
+          }
+        }
+      },
+      "put": {
+        "x-stormpathAuth": [
+          "app.blip.canManageBrands"
+        ],
+        "parameters": [
+          {
+            "name": "schema",
+            "description": "schema document",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object"
+            }
+          }
+        ],
+        "description": "Create or update the validation schema for the brand",
+        "operationId": "putSchema",
+        "responses": {
+          "204": {
+            "description": "no body",
+            "schema": {}
+          }
+        }
+      }
+    },
+    "/brand/{brandKey}/schema/test": {
+      "parameters": [
+        {
+          "$ref": "#/parameters/brandKeyPath"
+        },
+        {
+          "name": "body",
+          "description": "schema test body",
+          "in": "body",
+          "required": true,
+          "schema": {
+            "type": "object",
+            "properties": {
+              "schema": {
+                "type": "object",
+                "description": "A JSON schema document."
+              },
+              "query": {
+                "type": "object",
+                "description": "A query used to filter the locations used in the schema test."
+              }
+            },
+            "required": [
+              "schema"
+            ]
+          }
+        }
+      ],
+      "post": {
+        "description": "Returns a schema validation report",
+        "operationId": "testSchema",
+        "responses": {
+          "200": {
+            "description": "schema validation results",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "object"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/docs": {
+      "get": {
+        "description": "Returns the API documentation",
+        "operationId": "getDocs",
+        "responses": {
+          "200": {
+            "description": "API Documentation",
+            "schema": {
+              "type": "object"
+            }
+          }
+        }
+      }
+    },
+    "/stormpath/whoami": {
+      "get": {
+        "description": "Returns information on the current logged in user",
+        "operationId": "whoami",
+        "responses": {
+          "200": {
+            "description": "user info",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "username": {
+                  "type": "string"
+                },
+                "userdata": {
+                  "type": "object"
+                },
+                "authtype": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/stormpath/logout": {
+      "get": {
+        "description": "Log out of Stormpath and this site",
+        "operationId": "logout",
+        "responses": {
+          "200": {
+            "description": "Basic auth clears cache and returns OK",
+            "schema": {}
+          },
+          "302": {
+            "description": "Redirect to Stormpath IDSite logout page",
+            "schema": {}
+          }
+        }
+      }
+    },
+    "/stormpath/idSiteCallback": {
+      "get": {
+        "description": "Handle the result of Stormpath IDSite login",
+        "security": [],
+        "x-stormpathAuth": [],
+        "operationId": "idsiteCallback",
+        "parameters": [
+          {
+            "$ref": "#/parameters/jwtResponse"
+          }
+        ],
+        "responses": {
+          "302": {
+            "description": "redirect back to the originally requested page",
+            "schema": {}
+          }
+        }
+      }
+    },
+    "/stormpath/idSiteLogout": {
+      "get": {
+        "description": "Handle the result of logging out of Stormpath",
+        "security": [],
+        "operationId": "idsiteLogout",
+        "parameters": [
+          {
+            "$ref": "#/parameters/jwtResponse"
+          }
+        ],
+        "responses": {
+          "302": {
+            "description": "Redirect to the home page after logging out",
+            "schema": {}
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "source": {
+      "type": "object",
+      "properties": {
+        "source": {
+          "type": "string",
+          "description": "The unique source identifier.",
+          "minLength": 1,
+          "maxLength": 50
+        },
+        "type": {
+          "type": "string",
+          "description": "The source type.",
+          "enum": [
+            "origin",
+            "mutator"
+          ]
+        },
+        "description": {
+          "type": "string",
+          "description": "A description of the data source.",
+          "minLength": 1,
+          "maxLength": 200
+        }
+      },
+      "required": [
+        "source",
+        "type",
+        "description"
+      ]
+    },
+    "projection": {
+      "type": "object",
+      "properties": {
+        "projection": {
+          "type": "string",
+          "description": "The projection name."
+        },
+        "description": {
+          "type": "string",
+          "description": "A description of the projection."
+        }
+      },
+      "required": [
+        "projection",
+        "description"
+      ]
+    },
+    "brand": {
+      "type": "object",
+      "properties": {
+        "brandKey": {
+          "type": "string",
+          "description": "The unique brand identifier."
+        }
+      },
+      "required": [
+        "brandKey"
+      ]
+    },
+    "event": {
+      "type": "object",
+      "properties": {
+        "brandKey": {
+          "type": "string",
+          "description": "The unique brand identifier."
+        },
+        "locationKey": {
+          "type": "string",
+          "description": "The brand's unique identifier for the location."
+        },
+        "source": {
+          "type": "string",
+          "description": "The source name."
+        },
+        "patch": {
+          "type": "object",
+          "description": "The JSON patch."
+        },
+        "occurred": {
+          "type": "string",
+          "description": "The date and time of the event."
+        }
+      },
+      "required": [
+        "brandKey",
+        "locationKey",
+        "source",
+        "patch",
+        "occurred"
+      ]
+    },
+    "location": {
+      "type": "object",
+      "properties": {
+        "brandKey": {
+          "type": "string",
+          "description": "The unique brand identifier."
+        },
+        "locationKey": {
+          "type": "string",
+          "description": "The brand's unique identifier for the location."
+        },
+        "projectionName": {
+          "type": "string",
+          "description": "The name of the projection."
+        },
+        "document": {
+          "type": "object",
+          "description": "A JSON document containing the location's data."
+        },
+        "updated": {
+          "type": "string",
+          "description": "The date and time of the most recent update to this location's data."
+        }
+      },
+      "required": [
+        "brandKey",
+        "locationKey",
+        "projectionName",
+        "document",
+        "updated"
+      ]
+    },
+    "putLocationBody": {
+      "type": "object",
+      "properties": {
+        "document": {
+          "type": "object",
+          "description": "A JSON document containing the location's data."
+        }
+      },
+      "required": [
+        "document"
+      ]
+    },
+    "arrayOfStrings": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "description": "An array of string values."
+      }
+    },
+    "arrayOfObjects": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "description": "An array of objects."
+      }
+    }
+  }
+}
