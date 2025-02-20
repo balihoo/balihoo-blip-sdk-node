@@ -1,6 +1,6 @@
 {
-  "name": "balihoo-blip-sdk",
-  "version": "1.8.0",
+  "name": "@insticator/balihoo-blip-sdk",
+  "version": "0.0.1",
   "description": "Node.JS SDK for the Balihoo Local Information Platform",
   "main": "lib/BlipSdk.js",
   "repository": {
@@ -14,6 +14,9 @@
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/balihoo/balihoo-node-blip-sdk/issues"
+  },
+  "scripts": {
+    "compile": "gulp compile"
   },
   "homepage": "https://github.com/balihoo/balihoo-node-blip-sdk",
   "devDependencies": {
