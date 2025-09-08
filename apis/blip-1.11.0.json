@@ -913,6 +913,38 @@
           }
         }
       }
+    },
+    "/brand/{brandKey}/location/{locationKey}/locationKey": {
+      "parameters": [
+        {
+          "$ref": "#/parameters/brandKeyPath"
+        },
+        {
+          "$ref": "#/parameters/locationKeyPath"
+        }
+      ],
+      "patch": {
+        "parameters": [
+          {
+            "name": "newLocationKey",
+            "description": "new location key",
+            "in": "query",
+            "required": true,
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 50
+          }
+        ],
+        "description": "Updates location key for given location",
+        "operationId": "changeLocationKey",
+        "responses": {
+          "204": {
+            "description": "no body",
+            "schema": {
+            }
+          }
+        }
+      }
     }
   },
   "definitions": {
